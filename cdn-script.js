@@ -1,10 +1,52 @@
 (function () {
-    // Initialize Mixpanel
-    mixpanel.init("f103949fb7954f47635263e8387116ba");
+    console.log("CDN script started...");
+  
+    // Function to load Mixpanel dynamically
+    function loadMixpanel(callback) {
+      if (typeof mixpanel !== "undefined") {
+        console.log("Mixpanel already loaded.");
+        callback(); // Initialize Mixpanel immediately
+        return;
+      }
+  
+      console.log("Loading Mixpanel...");
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/mixpanel-browser";
+      script.async = true;
+  
+      script.onload = () => {
+        console.log("Mixpanel Loaded");
+        callback();
+      };
+  
+      script.onerror = () => {
+        console.error("Failed to load Mixpanel");
+      };
+  
+      document.head.appendChild(script);
+    }
+  
+    // Function to initialize Mixpanel
+    function initializeMixpanel() {
+      if (typeof mixpanel !== "undefined") {
+        mixpanel.init("f103949fb7954f47635263e8387116ba", { debug: true });
+        console.log("Mixpanel Initialized");
+      } else {
+        console.error("Mixpanel is not available");
+      }
+    }
+  
+    // Load Mixpanel first, then initialize it
+    loadMixpanel(initializeMixpanel);
   
     // Helper: Track user interactions
     function trackEvent(eventType, eventData) {
-      mixpanel.track(eventType, eventData);
+      if (typeof mixpanel !== "undefined") {
+        mixpanel.track(eventType, eventData);
+        console.log(`Tracked Event: ${eventType}`, eventData);
+      } else {
+        console.warn("Mixpanel not initialized, event not tracked.");
+      }
     }
   
     document.addEventListener("click", (event) => {
@@ -34,7 +76,4 @@
       }
     });
   })();
-
   
-
-  //Project Token - f103949fb7954f47635263e8387116ba
