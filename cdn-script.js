@@ -65,7 +65,7 @@
 
   // Helper: Validate messages (for security)
   function isValidOrigin(origin) {
-    const allowedOrigins = ["http://localhost:5173", "https://yourdomain.com"];
+    const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
     return allowedOrigins.includes(origin);
   }
 
