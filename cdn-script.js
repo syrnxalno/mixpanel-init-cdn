@@ -1,100 +1,60 @@
 (function () {
   console.log("CDN script started");
 
-  // Function to load Mixpanel dynamically
-  function loadMixpanel(callback) {
-    // Prevent multiple Mixpanel script loads
-    if (window.mixpanel) {
-      console.log("Mixpanel already loaded.");
-      callback(); // Initialize Mixpanel immediately
-      return;
+  (function (f, b) {
+    if (!b.__SV) {
+      var a, e, i, g;
+      window.mixpanel = b;
+      b._i = [];
+      b.init = function (a, e, d) {
+        function f(b, h) {
+          var a = h.split(".");
+          2 == a.length && ((b = b[a[0]]), (h = a[1]));
+          b[h] = function () {
+            b.push([h].concat(Array.prototype.slice.call(arguments, 0)));
+          };
+        }
+        var c = b;
+        "undefined" !== typeof d ? (c = b[d] = []) : (d = "mixpanel");
+        c.people = c.people || [];
+        c.toString = function (b) {
+          var a = "mixpanel";
+          "mixpanel" !== d && (a += "." + d);
+          b || (a += " (stub)");
+          return a;
+        };
+        c.people.toString = function () {
+          return c.toString(1) + ".people (stub)";
+        };
+        i =
+          "disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(
+            " "
+          );
+        for (g = 0; g < i.length; g++) f(c, i[g]);
+        b._i.push([a, e, d]);
+      };
+      b.__SV = 1.2;
+      a = f.createElement("script");
+      a.type = "text/javascript";
+      a.async = !0;
+      a.src = "https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";
+      e = f.getElementsByTagName("script")[0];
+      e.parentNode.insertBefore(a, e);
     }
+  })(document, window.mixpanel || []);
 
-    if (document.querySelector('script[src*="mixpanel"]')) {
-      console.log("Mixpanel script already exists in the document.");
-      return;
-    }
-
-    console.log("Loading Mixpanel...");
-    const script = document.createElement("script");
-    script.src = "https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";
-    script.async = true;
-
-    script.onload = () => {
-      console.log("Mixpanel script loaded, waiting for initialization...");
-      waitForMixpanel(callback);
-    };
-
-    script.onerror = () => {
-      console.error("Failed to load Mixpanel script.");
-    };
-
-    document.head.appendChild(script);
-  }
-
-  // Function to wait for Mixpanel to be available before initializing
-  function waitForMixpanel(callback, retries = 10) {
-    if (window.mixpanel && typeof mixpanel.init === "function") {
-      console.log("Mixpanel is ready!");
-      callback();
-    } else if (retries > 0) {
-      console.warn(`Waiting for Mixpanel... Retries left: ${retries}`);
-      setTimeout(() => waitForMixpanel(callback, retries - 1), 300);
-    } else {
-      console.error("Mixpanel failed to initialize after multiple attempts.");
-    }
-  }
-
-  // Function to initialize Mixpanel
-  function initializeMixpanel() {
-    if (window.mixpanel && typeof mixpanel.init === "function") {
-      mixpanel.init("f103949fb7954f47635263e8387116ba", { debug: true });
-      console.log("Mixpanel Initialized.");
-    } else {
-      console.error("Mixpanel is not available.");
-    }
-  }
-
-  // Load Mixpanel and initialize it
-  loadMixpanel(initializeMixpanel);
-
-  // Function to track events
-  function trackEvent(eventType, eventData) {
-    if (window.mixpanel && typeof mixpanel.track === "function") {
-      mixpanel.track(eventType, eventData);
-      console.log(`Tracked Event: ${eventType}`, eventData);
-    } else {
-      console.warn("Mixpanel not initialized, event not tracked.");
-    }
-  }
+  // Initialize Mixpanel
+  mixpanel.init("f103949fb7954f47635263e8387116ba", { debug: true });
+  console.log("Mixpanel Initialized.");
 
   // Track user clicks
   document.addEventListener("click", (event) => {
-    trackEvent("User Clicked", { element: event.target.tagName });
+    mixpanel.track("User Clicked", { element: event.target.tagName });
   });
 
   // Track user key presses
   document.addEventListener("keydown", (event) => {
-    trackEvent("User Key Press", { key: event.key });
-  });
-
-  // Helper: Validate messages (for security)
-  function isValidOrigin(origin) {
-    const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
-    return allowedOrigins.includes(origin);
-  }
-
-  // Securely listen for messages from iframes
-  window.addEventListener("message", (event) => {
-    if (!isValidOrigin(event.origin)) {
-      console.warn("Blocked message from unknown origin:", event.origin);
-      return;
-    }
-
-    const { type, payload } = event.data;
-    if (type === "USER_INTERACTION") {
-      trackEvent("Iframe Interaction", payload);
-    }
+    mixpanel.track("User Key Press", { key: event.key });
   });
 
 })();
