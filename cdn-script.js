@@ -11,7 +11,7 @@
 
     console.log("Loading Mixpanel...");
     const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/mixpanel-browser/dist/mixpanel.min.js";
+    script.src = "https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";
     script.async = true;
 
     script.onload = () => {
