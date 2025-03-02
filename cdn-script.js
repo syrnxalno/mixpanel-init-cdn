@@ -11,7 +11,7 @@
 
     console.log("Loading Mixpanel...");
     const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/mixpanel-browser";
+    script.src = "https://cdn.jsdelivr.net/npm/mixpanel-browser/dist/mixpanel.min.js";
     script.async = true;
 
     script.onload = () => {
@@ -72,7 +72,7 @@
   // Listen for messages securely
   window.addEventListener("message", (event) => {
     if (!isValidOrigin(event.origin)) {
-      console.warn("🚫 Blocked message from unknown origin:", event.origin);
+      console.warn("Blocked message from unknown origin:", event.origin);
       return;
     }
 
