@@ -1,11 +1,10 @@
 (function () {
   console.log("CDN script started");
 
-  // Function to load Mixpanel dynamically
   function loadMixpanel(callback) {
     if (window.mixpanel) {
       console.log("Mixpanel already loaded.");
-      callback(); // Initialize Mixpanel immediately
+      callback();
       return;
     }
 
@@ -16,11 +15,7 @@
 
     script.onload = () => {
       console.log("Mixpanel Loaded!");
-      if (typeof mixpanel !== "undefined") {
-        callback();
-      } else {
-        console.error("Mixpanel failed to initialize.");
-      }
+      waitForMixpanel(callback);
     };
 
     script.onerror = () => {
@@ -30,9 +25,19 @@
     document.head.appendChild(script);
   }
 
-  // Function to initialize Mixpanel
+  function waitForMixpanel(callback, retries = 10) {
+    if (window.mixpanel && typeof mixpanel.init === "function") {
+      callback();
+    } else if (retries > 0) {
+      console.log(`Waiting for Mixpanel... Retries left: ${retries}`);
+      setTimeout(() => waitForMixpanel(callback, retries - 1), 300);
+    } else {
+      console.error("Mixpanel failed to initialize after multiple attempts.");
+    }
+  }
+
   function initializeMixpanel() {
-    if (typeof mixpanel !== "undefined") {
+    if (window.mixpanel && typeof mixpanel.init === "function") {
       mixpanel.init("f103949fb7954f47635263e8387116ba", { debug: true });
       console.log("Mixpanel Initialized.");
     } else {
@@ -40,12 +45,10 @@
     }
   }
 
-  // Load Mixpanel first, then initialize it
   loadMixpanel(initializeMixpanel);
 
-  // Helper: Track user interactions (only if Mixpanel is available)
   function trackEvent(eventType, eventData) {
-    if (typeof mixpanel !== "undefined") {
+    if (window.mixpanel && typeof mixpanel.track === "function") {
       mixpanel.track(eventType, eventData);
       console.log(`Tracked Event: ${eventType}`, eventData);
     } else {
@@ -53,23 +56,19 @@
     }
   }
 
-  // Track user clicks
   document.addEventListener("click", (event) => {
     trackEvent("User Clicked", { element: event.target.tagName });
   });
 
-  // Track user key presses
   document.addEventListener("keydown", (event) => {
     trackEvent("User Key Press", { key: event.key });
   });
 
-  // Helper: Validate messages (for security)
   function isValidOrigin(origin) {
     const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
     return allowedOrigins.includes(origin);
   }
 
-  // Listen for messages securely
   window.addEventListener("message", (event) => {
     if (!isValidOrigin(event.origin)) {
       console.warn("Blocked message from unknown origin:", event.origin);
