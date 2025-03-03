@@ -1,2 +1,3 @@
 # cdn-script-hosting <br>
-Github + jsDelivr (Mixpanel for analytics)
+- Standalone cdn script
+- Github + jsDelivr (Mixpanel for analytics)
