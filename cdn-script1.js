@@ -44,7 +44,7 @@
   })(document, window.mixpanel || []);
 
   // Initialize Mixpanel
-  mixpanel.init("f103949fb7954f47635263e8387116ba", { debug: true });
+  mixpanel.init("", { debug: true });
   console.log("Mixpanel Initialized.");
 
   // Track user clicks
