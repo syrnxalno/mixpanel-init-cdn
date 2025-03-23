@@ -1,3 +1,3 @@
 # cdn-script-hosting <br>
-- Standalone cdn script
-- Github + jsDelivr (Mixpanel for analytics)
+- Standalone cdn using official MNixpanel SDK init setup
+- Token injection can be performed at runtime
