@@ -44,7 +44,7 @@
   })(document, window.mixpanel || []);
 
   // Initialize Mixpanel
-  mixpanel.init("", { debug: true });
+  mixpanel.init("MIXPANEL_TOKEN", { debug: true });
   console.log("Mixpanel Initialized.");
 
   // Track user clicks
